@@ -4,10 +4,12 @@ import PropTypes from 'prop-types';
 import { Form, Button, ErrorMessage, Label, Input } from './ContactForm.styled';
 import * as yup from 'yup';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getContacts } from 'redux/selectors';
+
 import { nanoid } from 'nanoid';
-import { addContact } from 'redux/contactSlice';
+import {
+  useAddContactMutation,
+  useFetchContactsQuery,
+} from 'redux/contactSlice';
 
 yup.addMethod(yup.string, 'validation', function () {
   return this.matches(
@@ -31,8 +33,8 @@ export const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const contacts = useSelector(getContacts);
-  const dispatch = useDispatch();
+  const [addContact] = useAddContactMutation();
+  const { data: contacts } = useFetchContactsQuery();
 
   const onChange = e => {
     const { name, value } = e.currentTarget;
@@ -60,7 +62,7 @@ export const ContactForm = () => {
         name,
         number,
       };
-      dispatch(addContact(contact));
+      addContact(contact);
     }
   };
 

@@ -1,11 +1,5 @@
 import styled from 'styled-components';
 
-export const List = styled.ul`
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  min-width: 450px;
-`;
 export const Item = styled.li`
   margin: 12px;
   display: flex;

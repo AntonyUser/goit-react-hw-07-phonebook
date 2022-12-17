@@ -1,26 +1,29 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from 'redux/contactSlice';
-import { getContacts, getFilter } from 'redux/selectors';
+import { useSelector } from 'react-redux';
+import {
+  useDeleteContactMutation,
+  useFetchContactsQuery,
+} from 'redux/contactSlice';
+import { getFilter } from 'redux/selectors';
 import { Item, List, Button } from './ContactList.styled';
 
 export const ContactList = () => {
-  const contacts = useSelector(getContacts);
+  const { data: contacts } = useFetchContactsQuery();
+  const [deleteContact, { isLoading }] = useDeleteContactMutation();
   const filter = useSelector(getFilter);
-  const visiableContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
-  const dispatch = useDispatch();
+
+  const visibleContacts =
+    contacts.length > 0 &&
+    contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+
   return (
     <List>
-      {visiableContacts.map(({ name, number, id }) => {
+      {visibleContacts.map(({ name, number, id }) => {
         return (
           <Item key={id}>
             {name}: {number}
-            <Button
-              onClick={() => {
-                dispatch(deleteContact(id));
-              }}
-            >
+            <Button onClick={() => deleteContact(id)} disabled={isLoading}>
               Delete
             </Button>
           </Item>
